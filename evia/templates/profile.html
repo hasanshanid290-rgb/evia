@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Account | E-Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f1f3f6; }
+        .order-card { background: white; border-radius: 8px; border: 1px solid #dbdbdb; margin-bottom: 20px; padding: 20px; }
+        .status-dot { height: 10px; width: 10px; background-color: #26a541; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">E-SHOP</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link text-white" href="/profile"><i class="fa fa-user"></i> {{ current_user.username }}</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group shadow-sm">
+                <div class="list-group-item bg-primary text-white fw-bold">
+                    Hello, {{ current_user.username }}
+                </div>
+                <a href="/profile" class="list-group-item list-group-item-action active">
+                    <i class="fa fa-shopping-bag me-2"></i> MY ORDERS
+                </a>
+                <a href="/" class="list-group-item list-group-item-action">
+                    <i class="fa fa-home me-2"></i> Continue Shopping
+                </a>
+                <a href="/logout" class="list-group-item list-group-item-action text-danger">
+                    <i class="fa fa-sign-out-alt me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h4 class="mb-4">My Orders</h4>
+
+            {% if orders %}
+                {% for order in orders %}
+                <div class="order-card shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <div>
+                            <span class="text-muted small">Order ID: #ORD-00{{ order.id }}</span>
+                        </div>
+                        <div>
+                            <span class="status-dot"></span>
+                            <span class="small fw-bold text-success">Order Placed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="mb-1 fw-bold">Items Ordered:</p>
+                            <p class="text-muted small">{{ order.product_details }}</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <p class="mb-0 text-muted small">Total Amount</p>
+                            <h5 class="fw-bold">₹{{ order.total_price }}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="bg-white p-5 text-center rounded border">
+                    <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
+                    <h5>You haven't ordered anything yet!</h5>
+                    <a href="/" class="btn btn-primary mt-3">Start Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% for order in orders %}
+<div class="order-card shadow-sm border p-3 mb-3 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold">Order #ORD-{{ order.id }}</h6>
+        <span class="badge bg-success">Placed</span>
+    </div>
+    
+    <p class="small text-muted mb-2">{{ order.product_details }}</p>
+    <p class="fw-bold text-primary">Total: ₹{{ order.total_price }}</p>
+
+    <div class="mt-3">
+        <a href="/cancel_order/{{ order.id }}" 
+           class="btn btn-sm btn-outline-danger me-2" 
+           onclick="return confirm('Are you sure you want to cancel this order?')">
+           <i class="fa fa-times"></i> Cancel Order
+        </a>
+
+        <a href="/return_order/{{ order.id }}" 
+           class="btn btn-sm btn-outline-secondary"
+           onclick="return confirm('Request a return for this item?')">
+           <i class="fa fa-undo"></i> Return Item
+        </a>
+    </div>
+</div>
+{% endfor %}
+</body>
+</html>
